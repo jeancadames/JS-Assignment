@@ -1,73 +1,66 @@
+const gameOptions = document.querySelectorAll('.option');
+const winnerTxt = document.createElement('p');
+const playerSelection = document.getElementById('player-selection');
+const computerOption = document.getElementById('computer-selection');
+const dashboard = document.querySelector('.dashboard');
+const startBtn = document.getElementById('start');
+const draws = document.getElementById('draws');
+const playerW = document.getElementById('player-w');
+const computerW = document.getElementById('computer-w');
+
 let playerWins = 0;
 let computerWins = 0;
-let ties = 0;
-let gameOptions = ['Rock', 'Paper', 'Scissors'];
+let draw = 0;
 
-const playerSelection = function playerPlay (){
-    
-    let playerOption = prompt();
-    let firstLetter = playerOption.slice(0,1);
-    let restOfLetters = playerOption.slice(1,100);
-    let firstUppercaseLetter = firstLetter.toUpperCase();
-    let lowercaseLetters = restOfLetters.toLocaleLowerCase();
-    playerOption = firstUppercaseLetter.concat('', lowercaseLetters);
-
-    return playerOption;
+function computerPlay () {
+        return computerOption.innerText = `${gameOptions[Math.floor(Math.random()*gameOptions.length)].innerText}`;
 }
 
-const computerSelection = function computerPlay () {    
-
-    return gameOptions[Math.floor(Math.random()*gameOptions.length)];    
-    
+function playerPlay (){
+    gameOptions.forEach(option => {
+        option.addEventListener('click', ()=> {
+            playerSelection.innerText = `${option.innerText}`
+            computerOption.innerText = '';
+        })
+    });
 }
 
-function playRound(playerSelection, computerSelection){
+playerPlay();
 
-    if(playerSelection !== "Rock" && playerSelection !== "Paper" && playerSelection !== "Scissors"){
-        alert("Use a valid option between Rock, Paper and Scissors");
-        return;
+function playRound(){
+    if(playerSelection.innerText === computerOption.innerText){
+        draw++;
+        console.log(draw);
+        draws.innerText = draw;
+        winnerTxt.innerText = 'It\'s a draw!';
     }
-
-    if (playerSelection === computerSelection){
-        ties++;
-        return "It's a tie!";
-    }
-    if (playerSelection === "Rock" && computerSelection === "Scissors"){
+    else if((playerSelection.innerText === 'Rock' && computerOption.innerText === 'Scissors') || (playerSelection.innerText === 'Scissors' && computerOption.innerText === 'Paper') || (playerSelection.innerText === 'Paper' && computerOption.innerText === 'Rock')) {
         playerWins++;
-        return "You win! Rock beats Scissors!";
-    }
-    if(playerSelection === "Rock" && computerSelection === "Paper"){
+        console.log(playerWins)
+        playerW.innerText = playerWins;
+        winnerTxt.innerText = `${playerSelection.innerText} beats ${computerOption.innerText}, you win!`
+        dashboard.appendChild(winnerTxt)
+    } 
+    else {
         computerWins++;
-        return "You lose! Paper beats Rock";
+        console.log(computerWins)
+        computerW.innerText = computerWins;
+        winnerTxt.innerText = `${playerSelection.innerText} beats ${computerOption.innerText}, you lose!`
+        dashboard.appendChild(winnerTxt)
     }
-    if(playerSelection === "Paper" && computerSelection === "Scissors"){
-        computerWins++;
-        return "You lose! Scissors beats Paper";
-    }
-    if(playerSelection === "Paper" && computerSelection === "Rock"){
-        playerWins++;
-        return "You win! Paper beats Rock";
-    }
-    if(playerSelection === "Scissors" && computerSelection === "Paper"){
-        playerWins++;
-        return "You win! Scissors beats Paper";
-    }
-    if(playerSelection === "Scissors" && computerSelection === "Rock"){
-        computerWins++;
-        return "You lose! Rock beats Paper";
-    }
-            
+}
+
+startBtn.addEventListener('click', ()=> {
+  while (!playerSelection.innerText) {
+    alert('You cannot play until you choose an option');
+    break;
+  }
+  computerPlay();
+  playRound();
+});
+
+while(playerWins ==5){
+    alert('GANO');
 }
 
 
-function game() {
-
-    for (let i = 0; i < 5; i++) {
-        console.log(playRound(playerSelection(), computerSelection()));
-    }
-
-    console.log(`The final score is: Player wins: ${playerWins} v.s. Computer wins: ${computerWins}. Ties: ${ties}`);
-
-}
-
-game();
